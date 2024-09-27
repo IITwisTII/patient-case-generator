@@ -62,29 +62,28 @@ def generate_patient_case(diagnoses):
 def generate_sbar_report(patient_case):
     if isinstance(patient_case, dict):  # Ensure patient_case is a dictionary
         sbar = {
-            "Situation": f"Patient presents with {patient_case['Symptoms']}.",
-            "Background": f"History includes: {patient_case['Patient History']}.",
-            "Assessment": f"Findings from examination: {patient_case['Physical Examination Findings']}.",
-            "Recommendation": f"Suggested treatment plan: {patient_case['Treatment Plan']}."
+            "Situation": f"{patient_case['Symptoms']}.",
+            "Background": f"{patient_case['Patient History']}.",
+            "Assessment": f"{patient_case['Physical Examination Findings']}.",
+            "Recommendation": f"{patient_case['Treatment Plan']}."
         }
         return sbar
     else:
         return {"error": "Invalid patient case format."}
 
-# def chat_with_patient(user_input, patient_case):
+def chat_with_patient(user_input, patient_case):
     # Build the context from the patient case
-    context = (
-        f"Patient is a {patient_case['Patient History']} "
-        f"{patient_case['Patient History']['gender']} diagnosed with {patient_case['Diagnosis']}. "
-        f"Symptoms include {patient_case['Symptoms']}. "
-        f"Physical exam findings: {patient_case['Physical Examination Findings']}. "
-    )
+    context = {
+        "Situation": f"{patient_case['Symptoms']}.",
+        "Background": f"{patient_case['Patient History']}.",
+        "Assessment": f"{patient_case['Physical Examination Findings']}.",
+    }
     
     # Prepare the messages for the OpenAI API
     messages = [
-        {"role": "system", "content": "You are a medical assistant helping a doctor interact with a patient."},
-        {"role": "user", "content": context},
-        {"role": "user", "content": user_input}
+        {"role": "system", "content": "You are a patient speaking to a medical doctor about your medical problems."},
+        {"role": "user", "content": json.dumps(context)},  # Ensure context is JSON serialized
+        {"role": "user", "content": user_input}  # User input is kept as a string
     ]
     
     try:
@@ -96,7 +95,8 @@ def generate_sbar_report(patient_case):
         )
         
         # Extract and return the response content
-        return response.choices[0].message.content
+        patient_response = response.choices[0].message.content.strip()
+        return {"response": patient_response}  # Return as a dictionary
     except Exception as e:
         return {"error": str(e)}
 
@@ -108,13 +108,13 @@ if __name__ == "__main__":
     diagnoses = load_diagnoses(json_file_path)
     
     case = generate_patient_case(diagnoses)
-    print("Generated Patient Case:\n", case)
+    # print("Generated Patient Case:\n", case)
 
     sbar = generate_sbar_report(case)
-    print("Generated Patient SBAR:\n", sbar)
+    # print("Generated Patient SBAR:\n", sbar)
 
     # Chat with the patient
-    # user_query = "What is your pain level on a scale of 1 to 10?"
-    # response = chat_with_patient(user_query, case)
-    # print("\nChatbot Response:\n", response)
+    user_query = "What is your pain level on a scale of 1 to 10?"
+    response = chat_with_patient(user_query, case)
+    print("\nChatbot Response:\n", response)
 
