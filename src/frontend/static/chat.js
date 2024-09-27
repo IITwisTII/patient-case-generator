@@ -57,3 +57,13 @@ const sendMessage = () => {
         });
     }
 }
+
+// Send message on button click
+document.getElementById('sendButton').addEventListener('click', sendMessage);
+
+// Send message on Enter key press
+document.getElementById('userInput').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+})
