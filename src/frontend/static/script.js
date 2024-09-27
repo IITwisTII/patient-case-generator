@@ -14,7 +14,7 @@ async function generatePatientCase() {
 
     const data = await response.json();
   
-    document.getElementById('case-output').innerHTML = `
+    result = document.getElementById('case-output').innerHTML = `
         <strong>Situation:</strong> ${data.Situation}<br>
         <strong>Background:</strong> ${data.Background}<br>
         <strong>Assessment:</strong> ${data.Assessment}<br>
@@ -23,7 +23,7 @@ async function generatePatientCase() {
     console.log("case generated")
   
   // Store the generated case in local storage
-    localStorage.setItem('generatedCase', data.case);
+    localStorage.setItem('generatedCase', result.case);
   
     window.location.href = '/chat';
 }
