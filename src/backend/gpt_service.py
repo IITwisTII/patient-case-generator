@@ -1,13 +1,21 @@
 from openai import OpenAI
-from config import OPENAI_API_KEY
 import os
 import json
 import random
+import importlib.util
+
+# Specify the path to your config file
+config_file_path = 'c:/config.py'
+
+# Load the config module
+spec = importlib.util.spec_from_file_location("config", config_file_path)
+config = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(config)
 #from dotenv import load_dotenv
 
 # Set your OpenAI API key
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=config.OPENAI_API_KEY)
 
 # Load the ICD-10 diagnoses from the JSON file
 def load_diagnoses(json_file):
