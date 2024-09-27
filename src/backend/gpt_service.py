@@ -81,9 +81,9 @@ def chat_with_patient(user_input, patient_case):
     
     # Prepare the messages for the OpenAI API
     messages = [
-        {"role": "system", "content": "You are a medical assistant helping a doctor interact with a patient."},
-        {"role": "user", "content": context},
-        {"role": "user", "content": user_input}
+        {"role": "system", "content": "You are a patient speaking to a medical doctor about your medical problems."},
+        {"role": "user", "content": json.dumps(context)},  # Ensure context is JSON serialized
+        {"role": "user", "content": user_input}  # User input is kept as a string
     ]
     
     try:
@@ -95,8 +95,8 @@ def chat_with_patient(user_input, patient_case):
         )
         
         # Extract and return the response content
-        patient_response = json.loads(response.choices[0].message.content)
-        return patient_response
+        patient_response = response.choices[0].message.content.strip()
+        return {"response": patient_response}  # Return as a dictionary
     except Exception as e:
         return {"error": str(e)}
 
@@ -108,10 +108,10 @@ if __name__ == "__main__":
     diagnoses = load_diagnoses(json_file_path)
     
     case = generate_patient_case(diagnoses)
-    print("Generated Patient Case:\n", case)
+    # print("Generated Patient Case:\n", case)
 
     sbar = generate_sbar_report(case)
-    print("Generated Patient SBAR:\n", sbar)
+    # print("Generated Patient SBAR:\n", sbar)
 
     # Chat with the patient
     user_query = "What is your pain level on a scale of 1 to 10?"
