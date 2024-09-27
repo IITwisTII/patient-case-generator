@@ -5,8 +5,12 @@ api_routes = Blueprint('api', __name__)
 
 # Route to serve the HTML page
 @api_routes.route('/')
-def index():
+def index_init():
     return render_template('index.html')
+
+@api_routes.route('/chat')
+def chat_init():
+    return render_template('chat.html')
 
 # When generating a patient case
 @api_routes.route('/generate-case', methods=['GET'])
@@ -21,3 +25,4 @@ def generate_case():
     return jsonify({
         'case': patient_case
     })
+    
