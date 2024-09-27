@@ -1,3 +1,25 @@
+window.onload = function() {
+    const chatBox = document.getElementById('chatBox');
+    
+    // Check if there is a generated case stored
+    const generatedCase = localStorage.getItem('generatedCase');
+    
+    if (generatedCase) {
+        // Display the generated case as a bot message
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.classList.add('message', 'bot-message');
+        botMessageDiv.innerHTML = `<span class="message-text">${generatedCase}</span>`;
+        chatBox.appendChild(botMessageDiv);
+        
+        // Scroll chat to the bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Clear the case from localStorage after displaying
+        localStorage.removeItem('generatedCase');
+    }
+}
+
+// The send message function remains the same
 const sendMessage = () => {
     const userInput = document.getElementById('userInput');
     const messageText = userInput.value;

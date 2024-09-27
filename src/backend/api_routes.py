@@ -16,7 +16,7 @@ def chat_init():
 @api_routes.route('/generate-case', methods=['GET'])
 def generate_case():
     # Call GPT model to generate patient case
-    json_file_path = '../../media/icd10_diagnoses.json'  # Adjust the path as necessary
+    json_file_path = '../../media\icd10_diagnoses.json'  # Adjust the path as necessary
     diagnoses = load_diagnoses(json_file_path)
     
     case = generate_patient_case(diagnoses)

@@ -1,4 +1,5 @@
 async function generatePatientCase() {
+    window.location.href = '/chat';
     const response = await fetch('http://127.0.0.1:5500/generate-case', {  
         method: 'GET',
         headers: {
@@ -24,8 +25,6 @@ async function generatePatientCase() {
   
   // Store the generated case in local storage
     localStorage.setItem('generatedCase', result.case);
-  
-    window.location.href = '/chat';
 }
 
 document.getElementById('generate-btn').addEventListener('click', generatePatientCase);
