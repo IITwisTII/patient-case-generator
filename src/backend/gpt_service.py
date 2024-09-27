@@ -4,17 +4,17 @@ import json
 import random
 import importlib.util
 
-# Specify the path to your config file
-config_file_path = 'c:/config.py'
-
-# Load the config module
-spec = importlib.util.spec_from_file_location("config", config_file_path)
+if os.name == "nt": 
+    config_file_path = 'c:/config.py'
+    spec = importlib.util.spec_from_file_location("config", config_file_path)
+elif os.name == "posix":
+    config_file_path = '/home/alikashash/config.py'  # Linux path
+    spec = importlib.util.spec_from_file_location("config", config_file_path)
+    
 config = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(config)
-#from dotenv import load_dotenv
 
 # Set your OpenAI API key
-
 client = OpenAI(api_key=config.OPENAI_API_KEY)
 
 # Load the ICD-10 diagnoses from the JSON file
