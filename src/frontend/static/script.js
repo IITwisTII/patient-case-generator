@@ -14,7 +14,7 @@ async function generatePatientCase() {
 
     const data = await response.json();
   
-    result = document.getElementById('case-output').innerHTML = `
+    const result = `
         <strong>Situation:</strong> ${data.Situation}<br>
         <strong>Background:</strong> ${data.Background}<br>
         <strong>Assessment:</strong> ${data.Assessment}<br>
