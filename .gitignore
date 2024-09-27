@@ -1,1 +1,2 @@
-.env
+/src/backend/__pycache__
+src/backend/config.py

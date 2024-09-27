@@ -3,7 +3,7 @@ from config import OPENAI_API_KEY
 import os
 import json
 import random
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 # Set your OpenAI API key
 
@@ -43,7 +43,7 @@ def generate_patient_case(diagnoses):
 
 if __name__ == "__main__":
     # Path to your JSON file
-    json_file_path = '../../media/icd10_diagnoses.json'  # Adjust the path as necessary
+    json_file_path = 'media/icd10_diagnoses.json'  # Adjust the path as necessary
     diagnoses = load_diagnoses(json_file_path)
     
     # Generate a patient case
