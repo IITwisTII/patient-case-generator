@@ -13,13 +13,19 @@ async function generatePatientCase() {
     }
 
     const data = await response.json();
-    document.getElementById('case-output').innerHTML = `
+  
+    result = document.getElementById('case-output').innerHTML = `
         <strong>Situation:</strong> ${data.Situation}<br>
         <strong>Background:</strong> ${data.Background}<br>
         <strong>Assessment:</strong> ${data.Assessment}<br>
         <strong>Recommendation:</strong> ${data.Recommendation}
     `;
     console.log("case generated")
+  
+  // Store the generated case in local storage
+    localStorage.setItem('generatedCase', result.case);
+  
+    window.location.href = '/chat';
 }
 
 document.getElementById('generate-btn').addEventListener('click', generatePatientCase);

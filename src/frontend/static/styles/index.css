@@ -4,7 +4,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #204a6e; /* Light background color */
+    background-color: #136979; /* Light background color */
     font-family: Arial, sans-serif;
 }
 
@@ -13,24 +13,24 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #666ca6; /* White background for the container */
+    background-color: #74d7ff; /* White background for the container */
     margin-top: -250px;
 }
 
 h1 {
-    color: #151515; /* Darker text color */
+    color: #074e60; /* Darker text color */
 }
 
 h2 {
     margin-top: 30px;
-    color: #000000; /* Lighter text color for subheading */
+    color: #74d7ff; /* Lighter text color for subheading */
     margin-bottom: -10px;
 }
 
 button {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #007bff; /* Button color */
+    background-color: #0187b8; /* Button color */
     color: white;
     border: none;
     border-radius: 5px;
@@ -39,7 +39,7 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3; /* Darker button color on hover */
+    background-color: #016386; /* Darker button color on hover */
 }
 
 p {
