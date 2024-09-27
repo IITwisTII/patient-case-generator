@@ -1,12 +1,14 @@
 from openai import OpenAI
+from config import OPENAI_API_KEY
 import os
 import json
 import random
 from dotenv import load_dotenv
 
 # Set your OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
-client = OpenAI()
+
+
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Load the ICD-10 diagnoses from the JSON file
 def load_diagnoses(json_file):
@@ -20,17 +22,23 @@ def generate_patient_case(diagnoses):
     diagnosis = random.choice(diagnoses)
 
     # Create a prompt for the API
-    prompt = (f"Generate a detailed medical case for a patient diagnosed with \"{diagnosis}\". "
-              "Include the patient's history, symptoms, examination findings, test results, and treatment plan.")
+    messages = [
+        {"role": "system", "content": "You are a medical expert helping to generate detailed medical cases."},
+        {
+            "role": "user",
+            "content": f"Generate a detailed medical case for a patient diagnosed with \"{diagnosis}\". "
+                       "Include the patient's history, symptoms, examination findings, test results, and treatment plan."
+        }
+    ]
 
     try:
-        response = client.chat.Completion.create(
+        response = client.chat.completions.create(
             model="gpt-4",  # or any other GPT model
-            prompt=prompt,
+            messages=messages,
             max_tokens=500,  # Adjust depending on the response size
             temperature=0.7
         )
-        return response.choices[0].text.strip()
+        return response.choices[0].message
     except Exception as e:
         return str(e)
 
