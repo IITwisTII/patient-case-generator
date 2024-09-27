@@ -3,6 +3,7 @@ window.onload = function() {
     
     // Check if there is a generated case stored
     const generatedCase = localStorage.getItem('generatedCase');
+    console.log(generatedCase)
     
     if (generatedCase) {
         // Display the generated case as a bot message
@@ -19,7 +20,6 @@ window.onload = function() {
     }
 }
 
-// The send message function remains the same
 const sendMessage = () => {
     const userInput = document.getElementById('userInput');
     const messageText = userInput.value;
@@ -35,14 +35,26 @@ const sendMessage = () => {
         // Clear input field
         userInput.value = '';
 
-        // Simulate bot response (for demonstration)
-        setTimeout(() => {
+        // Send message to the backend
+        fetch('/chat/message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user_input: messageText }) // Send the user input as JSON
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display bot response
             const botMessageDiv = document.createElement('div');
             botMessageDiv.classList.add('message', 'bot-message');
-            botMessageDiv.innerHTML = `<span class="message-text">This is a simulated response.</span>`;
+            botMessageDiv.innerHTML = `<span class="message-text">${data.response}</span>`;
             chatBox.appendChild(botMessageDiv);
             chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
-        }, 1000);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 }
 
@@ -54,4 +66,4 @@ document.getElementById('userInput').addEventListener('keydown', function(event)
     if (event.key === 'Enter') {
         sendMessage();
     }
-});
+})
