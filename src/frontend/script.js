@@ -1,7 +1,6 @@
 async function generatePatientCase() {
-    const prompt = document.getElementById('prompt').value;
 
-    const response = await fetch('http://localhost:5000/generate-case', {
+    const response = await fetch('http://localhost:5500/generate-case', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
