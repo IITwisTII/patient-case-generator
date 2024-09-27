@@ -5,8 +5,7 @@ import random
 from dotenv import load_dotenv
 
 # Set your OpenAI API key
-openai.api_key = os.getenv("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")
-
+openai.api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI()
 
 # Load the ICD-10 diagnoses from the JSON file
