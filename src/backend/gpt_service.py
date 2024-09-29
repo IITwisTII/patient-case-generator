@@ -21,100 +21,60 @@ def load_diagnoses(json_file):
     with open(json_file, 'r') as file:
         return json.load(file)
 
-def generate_patient_case(diagnoses):
-
-    # Pick a random diagnosis
-    diagnosis = random.choice(diagnoses)
-
-    messages = [
-        {"role": "system", "content": "You are a medical expert generating detailed medical cases."},
-        {
-            "role": "user",
-            "content": (f"Generate a detailed medical case for a patient diagnosed with '{diagnosis}'. "
-                        "Return the case in the following JSON format:\n"
-                        "{\n"
-                        "\"Patient History\": \"\",\n"
-                        "\"Symptoms\": \"\",\n"
-                        "\"Physical Examination Findings\": \"\",\n"
-                        "\"Lab Tests\": \"\",\n"
-                        "\"Radiology Results\": \"\",\n"
-                        "\"Diagnosis\": \"\",\n"
-                        "\"Treatment Plan\": \"\"\n"
-                        "}")
-        }
-    ]
-
+def generate_openai_response(client, system_prompt, user_prompts, model="gpt-3.5-turbo", max_tokens=1000, temperature=0.7):
+    messages = [{"role": "system", "content": system_prompt}]
+    
+    for prompt in user_prompts:
+        messages.append({"role": "user", "content": prompt})
+    
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  
+            model=model,
             messages=messages,
-            max_tokens=1000,  
-            temperature=0.7
+            max_tokens=max_tokens,
+            temperature=temperature
         )
-
-        patient_case = json.loads(response.choices[0].message.content)
-
-        return patient_case
+        
+        return response.choices[0].message.content.strip()
     except Exception as e:
         return {"error": str(e)}
 
-# SBAR report (Situation, Background, Assesment, Recommendation)
-def generate_sbar_report(patient_case):
-    if isinstance(patient_case, dict):  # Ensure patient_case is a dictionary
-        sbar = {
-            "Situation": f"{patient_case['Symptoms']}.",
-            "Background": f"{patient_case['Patient History']}.",
-            "Assessment": f"{patient_case['Physical Examination Findings']}.",
-            "Recommendation": f"{patient_case['Treatment Plan']}."
-        }
-        return sbar
-    else:
-        return {"error": "Invalid patient case format."}
+# Example usage with different prompts:
 
+# For generating patient case
+def generate_patient_case(diagnoses):
+    diagnosis = random.choice(diagnoses)
+    system_prompt = "You are a medical expert generating detailed medical cases."
+    user_prompt = (
+        f"Generate a detailed medical case for a patient diagnosed with '{diagnosis}'. "
+        "Return the case in the following JSON format:\n"
+        "{\n"
+        "\"Patient History\": \"\",\n"
+        "\"Symptoms\": \"\",\n"
+        "\"Physical Examination Findings\": \"\",\n"
+        "\"Lab Tests\": \"\",\n"
+        "\"Radiology Results\": \"\",\n"
+        "\"Diagnosis\": \"\",\n"
+        "\"Treatment Plan\": \"\"\n"
+        "}"
+    )
+
+    return generate_openai_response(client, system_prompt, [user_prompt])
+
+# For generating SBAR report
+def generate_sbar_report(patient_case):
+    system_prompt = "You are a medical expert generating SBAR reports based on patient cases."
+    user_prompt = json.dumps(patient_case)  # Convert patient case to JSON format
+    return generate_openai_response(client, system_prompt, [user_prompt], max_tokens=500)
+
+# For chatting with the patient
 def chat_with_patient(user_input, patient_case):
-    # Build the context from the patient case
+    system_prompt = "You are a patient speaking to a medical doctor about your medical problems."
     context = {
         "Situation": f"{patient_case['Symptoms']}.",
         "Background": f"{patient_case['Patient History']}.",
-        "Assessment": f"{patient_case['Physical Examination Findings']}.",
+        "Assessment": f"{patient_case['Physical Examination Findings']}."
     }
+    context_json = json.dumps(context)
     
-    # Prepare the messages for the OpenAI API
-    messages = [
-        {"role": "system", "content": "You are a patient speaking to a medical doctor about your medical problems."},
-        {"role": "user", "content": json.dumps(context)},  # Ensure context is JSON serialized
-        {"role": "user", "content": user_input}  # User input is kept as a string
-    ]
-    
-    try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Use the desired model
-            messages=messages,
-            max_tokens=150,  # Adjust as necessary
-            temperature=0.7
-        )
-        
-        # Extract and return the response content
-        patient_response = response.choices[0].message.content.strip()
-        return {"response": patient_response}  # Return as a dictionary
-    except Exception as e:
-        return {"error": str(e)}
-
-
-# Example usage
-if __name__ == "__main__":
-    # Generate a patient case first (from the previous code)
-    json_file_path = '../../media/icd10_diagnoses.json'  # Adjust the path as necessary
-    diagnoses = load_diagnoses(json_file_path)
-    
-    case = generate_patient_case(diagnoses)
-    # print("Generated Patient Case:\n", case)
-
-    sbar = generate_sbar_report(case)
-    # print("Generated Patient SBAR:\n", sbar)
-
-    # Chat with the patient
-    user_query = "What is your pain level on a scale of 1 to 10?"
-    response = chat_with_patient(user_query, case)
-    print("\nChatbot Response:\n", response)
-
+    return generate_openai_response(client, system_prompt, [context_json, user_input], max_tokens=150)
