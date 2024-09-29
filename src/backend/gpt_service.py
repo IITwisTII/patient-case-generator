@@ -24,7 +24,7 @@ def generate_openai_response(client, system_prompt, user_prompts, model="gpt-3.5
             temperature=temperature
         )
         
-        return response.choices[0].message.content.strip()
+        return json.loads(response.choices[0].message.content)
     except Exception as e:
         return {"error": str(e)}
 
