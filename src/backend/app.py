@@ -1,12 +1,6 @@
-from flask import Flask
-from flask_cors import CORS
-from api_routes import api_routes
+from app import create_app
 
-app = Flask(__name__, static_folder='../frontend/static', template_folder='../frontend/templates')
-app.secret_key = 'BAD_SECRET_KEY'
-CORS(app)  # Enable CORS for all routes
-    
-app.register_blueprint(api_routes)
+app = create_app()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5500)
