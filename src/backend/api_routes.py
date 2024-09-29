@@ -17,7 +17,7 @@ json_file_path = '../../media/icd10_diagnoses.json'
 diagnoses = load_diagnoses(json_file_path)
 
 # Endpoint to generate a new patient case
-@api_routes.route('/cases', methods=['POST'])
+@api_routes.route('/generate-case', methods=['GET'])
 def generate_case():
     try:
         case = generate_patient_case(diagnoses)
