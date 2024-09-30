@@ -3,7 +3,7 @@ from gpt_service import generate_patient_case, load_diagnoses, generate_sbar_rep
 
 api_routes = Blueprint('api', __name__)
 
-# Route to serve the HTML page
+# Route to landing page
 @api_routes.route('/')
 def index_init():
     return render_template('index.html')
@@ -12,30 +12,29 @@ def index_init():
 def chat_init():
     return render_template('chat.html')
 
-# In-memory store for patient cases
-patient_cases = {}
+# Load diagnoses once to avoid repeated file access
+json_file_path = '../../media/icd10_diagnoses.json'
+diagnoses = load_diagnoses(json_file_path)
 
-# When generating a patient case
+# Endpoint to generate a new patient case
 @api_routes.route('/generate-case', methods=['GET'])
 def generate_case():
-    # Call GPT model to generate patient case
-    json_file_path = '../../media/icd10_diagnoses.json'  # Adjust the path as necessary
-    diagnoses = load_diagnoses(json_file_path)
-    
-    case = generate_patient_case(diagnoses)
-    session['patient_case'] = case 
-    sbar = generate_sbar_report(case)
+    try:
+        case = generate_patient_case(diagnoses)
+        session['patient_case'] = case
+        sbar = generate_sbar_report(case)
+        return jsonify(sbar), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    return jsonify(sbar)
-
-@api_routes.route('/chat/message', methods=['POST'])
+# Endpoint for chat messages related to the patient case
+@api_routes.route('/chat/messages', methods=['POST'])
 def chat_message():
     user_input = request.json.get('user_input')
-    patient_case = session.get('patient_case')  # Retrieve the patient case from session
+    patient_case = session.get('patient_case')
 
     if patient_case:
         response = chat_with_patient(user_input, patient_case)
+        return jsonify(response)
     else:
-        response = {"response": "No patient case found."}
-
-    return jsonify(response)
+        return jsonify({"error": "No patient case found."}), 404

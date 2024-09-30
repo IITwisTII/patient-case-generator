@@ -1,64 +1,54 @@
 from openai import OpenAI
-import os
 import json
 import random
-import importlib.util
+from config_loader import config_loader
 
-if os.name == "nt": 
-    config_file_path = 'c:/config.py'
-    spec = importlib.util.spec_from_file_location("config", config_file_path)
-elif os.name == "posix":
-    config_file_path = '/home/alikashash/config.py'  # Linux path
-    spec = importlib.util.spec_from_file_location("config", config_file_path)
-    
-config = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(config)
+client = OpenAI(api_key=config_loader.openai_api_key)
 
-# Set your OpenAI API key
-client = OpenAI(api_key=config.OPENAI_API_KEY)
 
 def load_diagnoses(json_file):
     with open(json_file, 'r') as file:
         return json.load(file)
 
-def generate_patient_case(diagnoses):
-
-    # Pick a random diagnosis
-    diagnosis = random.choice(diagnoses)
-
-    messages = [
-        {"role": "system", "content": "You are a medical expert generating detailed medical cases."},
-        {
-            "role": "user",
-            "content": (f"Generate a detailed medical case for a patient diagnosed with '{diagnosis}'. "
-                        "Return the case in the following JSON format:\n"
-                        "{\n"
-                        "\"Patient History\": \"\",\n"
-                        "\"Symptoms\": \"\",\n"
-                        "\"Physical Examination Findings\": \"\",\n"
-                        "\"Lab Tests\": \"\",\n"
-                        "\"Radiology Results\": \"\",\n"
-                        "\"Diagnosis\": \"\",\n"
-                        "\"Treatment Plan\": \"\"\n"
-                        "}")
-        }
-    ]
-
+def generate_openai_response(client, system_prompt, user_prompts, model="gpt-3.5-turbo", max_tokens=1000, temperature=0.7):
+    messages = [{"role": "system", "content": system_prompt}]
+    
+    for prompt in user_prompts:
+        messages.append({"role": "user", "content": prompt})
+    
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  
+            model=model,
             messages=messages,
-            max_tokens=1000,  
-            temperature=0.7
+            max_tokens=max_tokens,
+            temperature=temperature
         )
-
-        patient_case = json.loads(response.choices[0].message.content)
-
-        return patient_case
+        
+        return json.loads(response.choices[0].message.content)
     except Exception as e:
         return {"error": str(e)}
 
-# SBAR report (Situation, Background, Assesment, Recommendation)
+# For generating patient case
+def generate_patient_case(diagnoses):
+    diagnosis = random.choice(diagnoses)
+    system_prompt = "You are a medical expert generating detailed medical cases."
+    user_prompt = (
+        f"Generate a detailed medical case for a patient diagnosed with '{diagnosis}'. "
+        "Return the case in the following JSON format:\n"
+        "{\n"
+        "\"Patient History\": \"\",\n"
+        "\"Symptoms\": \"\",\n"
+        "\"Physical Examination Findings\": \"\",\n"
+        "\"Lab Tests\": \"\",\n"
+        "\"Radiology Results\": \"\",\n"
+        "\"Diagnosis\": \"\",\n"
+        "\"Treatment Plan\": \"\"\n"
+        "}"
+    )
+
+    return generate_openai_response(client, system_prompt, [user_prompt])
+
+# For generating SBAR report
 def generate_sbar_report(patient_case):
     if isinstance(patient_case, dict):  # Ensure patient_case is a dictionary
         sbar = {
@@ -71,50 +61,30 @@ def generate_sbar_report(patient_case):
     else:
         return {"error": "Invalid patient case format."}
 
+# For chatting with the patient
 def chat_with_patient(user_input, patient_case):
-    # Build the context from the patient case
+    system_prompt = "You are a patient speaking to a medical doctor about your medical problems."
     context = {
         "Situation": f"{patient_case['Symptoms']}.",
         "Background": f"{patient_case['Patient History']}.",
-        "Assessment": f"{patient_case['Physical Examination Findings']}.",
+        "Assessment": f"{patient_case['Physical Examination Findings']}."
     }
+    context_json = json.dumps(context)
     
-    # Prepare the messages for the OpenAI API
-    messages = [
-        {"role": "system", "content": "You are a patient speaking to a medical doctor about your medical problems."},
-        {"role": "user", "content": json.dumps(context)},  # Ensure context is JSON serialized
-        {"role": "user", "content": user_input}  # User input is kept as a string
-    ]
+    return generate_openai_response(client, system_prompt, [context_json, user_input], max_tokens=150)
+
+
+#def evaluate_diagnosis(patient_case, chat_history):
+  #  system_prompt = (
+  #      "You are a medical expert evaluating a doctor's diagnosis and decision-making process. "
+  #      "Provide feedback based on the tests they ordered and the diagnosis they made."
+   # )
     
-    try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Use the desired model
-            messages=messages,
-            max_tokens=150,  # Adjust as necessary
-            temperature=0.7
-        )
-        
-        # Extract and return the response content
-        patient_response = response.choices[0].message.content.strip()
-        return {"response": patient_response}  # Return as a dictionary
-    except Exception as e:
-        return {"error": str(e)}
-
-
-# Example usage
-if __name__ == "__main__":
-    # Generate a patient case first (from the previous code)
-    json_file_path = '../../media/icd10_diagnoses.json'  # Adjust the path as necessary
-    diagnoses = load_diagnoses(json_file_path)
+  #  feedback_prompt = (
+  #      f"Patient Case: {json.dumps(patient_case)}\n"
+  #      f"Doctor's Diagnosis: {chat_history}\n"
+  #      "Evaluate the doctor's reasoning and provide feedback. Score them from 0 to 10 based on accuracy "
+   #     "of diagnosis and quality of decision-making."
+   # )
     
-    case = generate_patient_case(diagnoses)
-    # print("Generated Patient Case:\n", case)
-
-    sbar = generate_sbar_report(case)
-    # print("Generated Patient SBAR:\n", sbar)
-
-    # Chat with the patient
-    user_query = "What is your pain level on a scale of 1 to 10?"
-    response = chat_with_patient(user_query, case)
-    print("\nChatbot Response:\n", response)
-
+    #return generate_openai_response(client, system_prompt, [feedback_prompt],max_tokens=150 )
