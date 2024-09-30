@@ -1,69 +1,85 @@
 window.onload = function() {
     const chatBox = document.getElementById('chatBox');
-    
-    // Check if there is a generated case stored
+    // Initialize a temporary chat history array
+    let chatHistory = [];
+    displayGeneratedCase(chatBox, chatHistory);
+};
+
+const displayGeneratedCase = (chatBox, chatHistory) => {
     const generatedCase = localStorage.getItem('generatedCase');
-    console.log(generatedCase)
     
     if (generatedCase) {
-        // Display the generated case as a bot message
-        const botMessageDiv = document.createElement('div');
-        botMessageDiv.classList.add('message', 'bot-message');
-        botMessageDiv.innerHTML = `<span class="message-text">${generatedCase}</span>`;
-        chatBox.appendChild(botMessageDiv);
-        
-        // Scroll chat to the bottom
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        // Clear the case from localStorage after displaying
-        localStorage.removeItem('generatedCase');
+        appendMessage(chatBox, 'bot', generatedCase, chatHistory);
+        chatBox.scrollTop = chatBox.scrollHeight; // Scroll chat to the bottom
+        localStorage.removeItem('generatedCase'); // Clear the case from localStorage
     }
-}
+};
+
+const appendMessage = (chatBox, sender, message, chatHistory) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', `${sender}-message`);
+    messageDiv.innerHTML = `<span class="message-text">${message}</span>`;
+    chatBox.appendChild(messageDiv);
+
+    // Store the message in the temporary chat history
+    chatHistory.push(`${sender.charAt(0).toUpperCase() + sender.slice(1)}: ${message}`);
+};
 
 const sendMessage = () => {
     const userInput = document.getElementById('userInput');
-    const messageText = userInput.value;
+    const messageText = userInput.value.trim();
 
-    if (messageText.trim() !== "") {
-        // Display user message
+    if (messageText !== "") {
         const chatBox = document.getElementById('chatBox');
-        const userMessageDiv = document.createElement('div');
-        userMessageDiv.classList.add('message', 'user-message');
-        userMessageDiv.innerHTML = `<span class="message-text">${messageText}</span>`;
-        chatBox.appendChild(userMessageDiv);
+        appendMessage(chatBox, 'user', messageText, chatHistory); // Display user message
 
-        // Clear input field
-        userInput.value = '';
+        userInput.value = ''; // Clear input field
+        
+        fetchResponse(messageText, chatBox, chatHistory);
+    }
+};
 
-        // Send message to the backend
-        fetch('/chat/message', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ user_input: messageText }) // Send the user input as JSON
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Display bot response
-            const botMessageDiv = document.createElement('div');
-            botMessageDiv.classList.add('message', 'bot-message');
-            botMessageDiv.innerHTML = `<span class="message-text">${data.response}</span>`;
-            chatBox.appendChild(botMessageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
-        })
-        .catch(error => {
-            console.error('Error:', error);
+const fetchResponse = (messageText, chatBox, chatHistory) => {
+    fetch('/chat/messages', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ user_input: messageText })
+    })
+    .then(response => response.json())
+    .then(data => handleResponse(data, chatBox, chatHistory))
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Something went wrong, please try again later.');
+    });
+};
+
+const handleResponse = (data, chatBox, chatHistory) => {
+    if (data.error) {
+        alert(`Error: ${data.error}`);
+        return;
+    }
+
+    appendMessage(chatBox, 'bot', data.response, chatHistory); // Display bot response
+
+    // Display chat history if needed
+    if (data.history) {
+        chatBox.innerHTML = ''; // Clear chatBox
+        data.history.forEach(line => {
+            const sender = line.startsWith('User:') ? 'user' : 'bot';
+            appendMessage(chatBox, sender, line, chatHistory);
         });
     }
-}
 
-// Send message on button click
+    chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom after updating chat history
+};
+
+// Event listeners
 document.getElementById('sendButton').addEventListener('click', sendMessage);
-
-// Send message on Enter key press
 document.getElementById('userInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission on Enter
         sendMessage();
     }
-})
+});

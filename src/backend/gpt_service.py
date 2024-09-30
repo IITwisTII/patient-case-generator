@@ -62,8 +62,12 @@ def generate_sbar_report(patient_case):
         return {"error": "Invalid patient case format."}
 
 # For chatting with the patient
-def chat_with_patient(user_input, patient_case):
-    system_prompt = "You are a patient speaking to a medical doctor about your medical problems."
+# history is chat history up to that point in the current session
+def chat_with_patient(user_input, patient_case, history):
+    system_prompt = (
+    f"You are a patient speaking to a medical doctor about your medical problems" 
+    "and this is what has been said so far: '{history}'"
+    )
     context = {
         "Situation": f"{patient_case['Symptoms']}.",
         "Background": f"{patient_case['Patient History']}.",

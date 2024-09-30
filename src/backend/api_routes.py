@@ -33,8 +33,20 @@ def chat_message():
     user_input = request.json.get('user_input')
     patient_case = session.get('patient_case')
 
-    if patient_case:
-        response = chat_with_patient(user_input, patient_case)
-        return jsonify(response)
-    else:
+    if not patient_case:
         return jsonify({"error": "No patient case found."}), 404
+
+    # Retrieve chat history from session
+    chat_history = session.get('chat_history', [])
+    
+    # Call the chat function with the user input, patient case, and current chat history
+    response = chat_with_patient(user_input, patient_case, chat_history)
+    
+    # Update chat history with user input and AI response
+    chat_history.append(f"User: {user_input}")
+    chat_history.append(f"Patient: {response}")
+    
+    # Save updated chat history back into session
+    session['chat_history'] = chat_history
+    
+    return jsonify({"response": response, "history": chat_history})
