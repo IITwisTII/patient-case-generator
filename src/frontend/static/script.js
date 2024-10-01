@@ -27,6 +27,10 @@ async function generatePatientCase() {
     window.location.href = '/chat';
 }
 
+function testChat(){
+    window.location.href = '/chat';
+}
+
 document.getElementById('generate-btn').addEventListener('click', generatePatientCase);
 
 

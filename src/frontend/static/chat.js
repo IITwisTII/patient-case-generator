@@ -1,7 +1,6 @@
+let chatHistory = [];
 window.onload = function() {
     const chatBox = document.getElementById('chatBox');
-    // Initialize a temporary chat history array
-    let chatHistory = [];
     displayGeneratedCase(chatBox, chatHistory);
 };
 
