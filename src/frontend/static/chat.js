@@ -94,10 +94,38 @@ const handleResponse = (data, chatBox, chatHistory) => {
             appendMessage(chatBox, sender, line, chatHistory);
         });
     }
+    
+    /* When we implement how to end chat and what to do after*/
+    if (data.chat_ended) {
+        appendMessage(chatBox, 'bot', `Evaluation: ${data.evaluation}`, chatHistory);
+        stopChat(); // Function to disable further input
+    }
 
     chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom after updating chat history
     console.log("[handleResponse] ChatBox scrolled to bottom."); // Debugging
 };
+
+const stopChat = () => {
+    // Disable user input and send button
+    document.getElementById('userInput').disabled = true; // Disable user input field
+    document.getElementById('sendButton').disabled = true; // Disable send button
+
+    // Create a message to inform the user that the chat has ended
+    const endMessage = document.createElement('div');
+    endMessage.classList.add('message', 'bot-message'); // Style the message as from the bot
+    endMessage.innerHTML = "<span class='message-text'>Chat has ended. Thank you for your input!</span>";
+
+    // Append the ending message to the chat box
+    const chatBox = document.getElementById('chatBox');
+    chatBox.appendChild(endMessage);
+    chatBox.scrollTop = chatBox.scrollHeight; // Scroll chat to the bottom
+
+    console.log("[stopChat] Chat has been disabled and end message displayed."); // Debugging
+
+    // Optional: You can clear the chat history or perform any other necessary cleanup
+    // chatHistory = []; // Uncomment if you want to reset chat history
+};
+
 
 // Event listeners
 document.getElementById('sendButton').addEventListener('click', () => {
