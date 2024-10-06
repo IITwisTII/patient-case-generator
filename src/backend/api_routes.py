@@ -2,7 +2,8 @@ from flask import Blueprint, jsonify, render_template, request, session
 from gpt_services.openai_client import client
 from gpt_services.case_generator import generate_patient_case, load_diagnoses, generate_sbar_report
 from gpt_services.chat_manager import chat_with_patient
-from gpt_services.evaluation import evaluate_diagnosis, assess_user_input
+from gpt_services.evaluation import evaluate_diagnosis
+from gpt_services.commands import diagnosis_command, test_command
 
 api_routes = Blueprint('api', __name__)
 
@@ -48,7 +49,8 @@ def chat_message():
     
     session['chat_history'] = chat_history
     
-    if assess_user_input(client, user_input):  # Check if the user seems to give a diagnosis
+    first_element = user_input[0][0]
+    if diagnosis_command(first_element):
         evaluation = evaluate_diagnosis(client, patient_case, chat_history)
         return jsonify({
             "response": response,
@@ -56,6 +58,8 @@ def chat_message():
             "chat_ended": True,  # Indicate that the chat has ended
             "evaluation": evaluation
         }), 200
+    elif test_command(first_element):
+        return 
     
     return jsonify({"response": response, "history": chat_history})
 
