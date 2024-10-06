@@ -13,7 +13,7 @@ const displayGeneratedCase = (chatBox, chatHistory) => {
     if (generatedCase) {
         appendMessage(chatBox, 'bot', generatedCase, chatHistory);
         chatBox.scrollTop = chatBox.scrollHeight; // Scroll chat to the bottom
-        console.log("[displayGeneratedCase] Generated case appended to chatBox."); // Debugging
+        console.log("[displayGeneratedCase] Generated case app  ended to chatBox."); // Debugging
         localStorage.removeItem('generatedCase'); // Clear the case from localStorage
     }
 };

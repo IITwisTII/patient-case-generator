@@ -22,9 +22,7 @@ def generate_patient_case(client, diagnoses):
         "\"Treatment Plan\": \"\"\n"
         "}"
     )
-    patient_case_generated = generate_openai_response(client, system_prompt, [user_prompt])
-    print("Raw patient case Response:", patient_case_generated)  # Check raw response
-    return patient_case_generated
+    return generate_openai_response(client, system_prompt, [user_prompt])
 
 def generate_sbar_report(patient_case):
     if isinstance(patient_case, dict):  # Ensure patient_case is a dictionary

@@ -24,6 +24,14 @@ async function generatePatientCase() {
   
   // Store the generated case in local storage
     localStorage.setItem('generatedCase', result);
+
+    await fetch('http://127.0.0.1:5500/clear-chat-history', {  
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    
     window.location.href = '/chat';
 }
 
