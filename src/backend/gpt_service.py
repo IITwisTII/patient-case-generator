@@ -24,14 +24,13 @@ def generate_openai_response(client, system_prompt, user_prompts, model="gpt-3.5
             temperature=temperature
         )
         
-        print("Raw API Response:", response)  # Check raw response
         content = response.choices[0].message.content
         
         # Attempt to load the content as JSON
         try:
-            return json.loads(content)  # Try to parse as JSON
+            return json.loads(content)  # Try to parse as JSON for generate_patient_case
         except json.JSONDecodeError:
-            return {"message": content}  # Return as plain text if JSON parsing fails
+            return {"message": content}  # Return as plain text if JSON parsing fails for chat_with_patient
     except Exception as e:
         return {"error": str(e)}
 
@@ -52,9 +51,8 @@ def generate_patient_case(diagnoses):
         "\"Treatment Plan\": \"\"\n"
         "}"
     )
-    patient_case_generated = generate_openai_response(client, system_prompt, [user_prompt])
-    print("Raw patient case Response:", patient_case_generated)  # Check raw response
-    return patient_case_generated
+
+    return generate_openai_response(client, system_prompt, [user_prompt])
 
 # For generating SBAR report
 def generate_sbar_report(patient_case):
@@ -85,7 +83,6 @@ def chat_with_patient(user_input, patient_case, history):
 
     response = generate_openai_response(client, system_prompt, [context_json, user_input])
     
-    print("API Response:", response)
     return response
 
 def evaluate_diagnosis(patient_case, chat_history):
