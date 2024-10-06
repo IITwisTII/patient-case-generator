@@ -24,7 +24,8 @@ def generate_openai_response(client, system_prompt, user_prompts, model="gpt-3.5
             temperature=temperature
         )
         
-        return json.loads(response.choices[0].message.content)
+        print("Raw API Response:", response)  # Check raw response
+        return response.choices[0].message.content
     except Exception as e:
         return {"error": str(e)}
 
@@ -74,9 +75,11 @@ def chat_with_patient(user_input, patient_case, history):
         "Assessment": f"{patient_case['Physical Examination Findings']}."
     }
     context_json = json.dumps(context)
-    
-    return generate_openai_response(client, system_prompt, [context_json, user_input], max_tokens=150)
 
+    response = generate_openai_response(client, system_prompt, [context_json, user_input], max_tokens=150)
+    
+    print("API Response:", response)
+    return response
 
 def evaluate_diagnosis(patient_case, chat_history):
     system_prompt = (

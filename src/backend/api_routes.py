@@ -23,7 +23,7 @@ def generate_case():
         case = generate_patient_case(diagnoses)
         session['patient_case'] = case
         sbar = generate_sbar_report(case)
-        return jsonify(sbar), 201
+        return jsonify(case), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -41,6 +41,8 @@ def chat_message():
     
     # Call the chat function with the user input, patient case, and current chat history
     response = chat_with_patient(user_input, patient_case, chat_history)
+
+    print(f"AI response: {response}")
     
     # Update chat history with user input and AI response
     chat_history.append(f"User: {user_input}")

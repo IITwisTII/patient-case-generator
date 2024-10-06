@@ -1,0 +1,52 @@
+2024-09-29 22:22:57,469 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5500
+ * Running on http://10.0.2.15:5500
+2024-09-29 22:22:57,470 - INFO - [33mPress CTRL+C to quit[0m
+2024-09-29 22:23:00,868 - INFO - 127.0.0.1 - - [29/Sep/2024 22:23:00] "[36mGET /static/styles/index.css HTTP/1.1[0m" 304 -
+2024-09-29 22:23:02,095 - INFO - Generating OpenAI response with system prompt: You are a medical expert generating detailed medical cases.
+2024-09-29 22:23:07,629 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-09-29 22:23:07,637 - INFO - Received response from OpenAI: {
+"Patient History": "Mr. Smith, a 45-year-old male, presents to the clinic for his subsequent encounter following a recent motorcycle accident. He sustained multiple injuries including a fractured right tibia and fibula, as well as contusions and abrasions on his upper body.",
+"Symptoms": "The patient reports increasing pain and swelling in his right lower leg. He also complains of difficulty bearing weight on the injured limb.",
+"Physical Examination Findings": "On examination, there is significant swelling and tenderness over the right lower leg. The patient has limited range of motion at the ankle joint and is unable to bear weight on the affected limb. Distal pulses are intact, but there is some numbness over the lateral aspect of the foot.",
+"Lab Tests": "Initial blood work reveals elevated inflammatory markers consistent with ongoing tissue damage. X-rays confirm the presence of a displaced fracture of the right tibia and fibula.",
+"Radiology Results": "X-ray imaging shows a displaced fracture of the right tibia and fibula with no evidence of compartment syndrome at this time.",
+"Diagnosis": "Subsequent encounter for closed fracture of right tibia and fibula, initial encounter for complications.",
+"Treatment Plan": "The patient will be placed in a removable cast for immobilization of the fracture. He will be instructed to elevate the leg and apply ice to reduce swelling. Pain management will be provided with a combination of acetaminophen and a nonsteroidal anti-inflammatory drug. Follow-up appointments will be scheduled to monitor healing progress and ensure proper bone alignment." 
+}
+2024-09-29 22:23:07,638 - INFO - 127.0.0.1 - - [29/Sep/2024 22:23:07] "[35m[1mGET /generate-case HTTP/1.1[0m" 201 -
+2024-09-29 22:23:07,717 - INFO - 127.0.0.1 - - [29/Sep/2024 22:23:07] "GET /chat HTTP/1.1" 200 -
+2024-09-29 22:23:07,940 - INFO - 127.0.0.1 - - [29/Sep/2024 22:23:07] "[36mGET /static/styles/chat.css HTTP/1.1[0m" 304 -
+2024-09-29 22:23:07,949 - INFO - 127.0.0.1 - - [29/Sep/2024 22:23:07] "[36mGET /static/chat.js HTTP/1.1[0m" 304 -
+2024-09-29 22:23:55,055 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5500
+ * Running on http://10.0.2.15:5500
+2024-09-29 22:23:55,055 - INFO - [33mPress CTRL+C to quit[0m
+2024-09-29 22:23:58,667 - INFO - Generating OpenAI response with system prompt: You are a medical expert generating detailed medical cases.
+2024-09-29 22:24:05,722 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-09-29 22:24:05,733 - INFO - 127.0.0.1 - - [29/Sep/2024 22:24:05] "[35m[1mGET /generate-case HTTP/1.1[0m" 201 -
+2024-09-29 22:24:05,825 - INFO - 127.0.0.1 - - [29/Sep/2024 22:24:05] "GET /chat HTTP/1.1" 200 -
+2024-09-29 22:24:05,991 - INFO - 127.0.0.1 - - [29/Sep/2024 22:24:05] "[36mGET /static/styles/chat.css HTTP/1.1[0m" 304 -
+2024-09-29 22:24:05,996 - INFO - 127.0.0.1 - - [29/Sep/2024 22:24:05] "[36mGET /static/chat.js HTTP/1.1[0m" 304 -
+2024-09-29 22:25:13,532 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5500
+ * Running on http://10.0.2.15:5500
+2024-09-29 22:25:13,532 - INFO - [33mPress CTRL+C to quit[0m
+2024-09-29 22:25:15,778 - INFO - 127.0.0.1 - - [29/Sep/2024 22:25:15] "GET /chat HTTP/1.1" 200 -
+2024-09-29 22:25:15,961 - INFO - 127.0.0.1 - - [29/Sep/2024 22:25:15] "[36mGET /static/styles/chat.css HTTP/1.1[0m" 304 -
+2024-09-29 22:25:16,022 - INFO - 127.0.0.1 - - [29/Sep/2024 22:25:16] "[36mGET /static/chat.js HTTP/1.1[0m" 304 -
+2024-09-29 22:25:18,697 - INFO - Generating OpenAI response with system prompt: You are a medical expert generating detailed medical cases.
+2024-09-29 22:25:24,893 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-09-29 22:25:24,904 - ERROR - Invalid patient case format.
+2024-09-29 22:25:24,906 - INFO - 127.0.0.1 - - [29/Sep/2024 22:25:24] "[35m[1mGET /generate-case HTTP/1.1[0m" 201 -
+2024-09-29 22:25:25,040 - INFO - 127.0.0.1 - - [29/Sep/2024 22:25:25] "GET /chat HTTP/1.1" 200 -
+2024-09-29 22:25:25,164 - INFO - 127.0.0.1 - - [29/Sep/2024 22:25:25] "[36mGET /static/styles/chat.css HTTP/1.1[0m" 304 -
+2024-09-29 22:25:25,192 - INFO - 127.0.0.1 - - [29/Sep/2024 22:25:25] "[36mGET /static/chat.js HTTP/1.1[0m" 304 -
+2024-09-29 22:28:15,482 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5500
+ * Running on http://10.0.2.15:5500
+2024-09-29 22:28:15,484 - INFO - [33mPress CTRL+C to quit[0m

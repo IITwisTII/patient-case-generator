@@ -63,7 +63,7 @@ const fetchResponse = (messageText, chatBox, chatHistory) => {
         },
         body: JSON.stringify({ user_input: messageText })
     })
-    .then(response => response.json())
+    .then(response => response.text())
     .then(data => {
         console.log("[fetchResponse] Response received from backend:", data); // Debugging
         handleResponse(data, chatBox, chatHistory);
