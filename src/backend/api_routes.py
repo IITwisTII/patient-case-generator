@@ -21,9 +21,13 @@ diagnoses = load_diagnoses(json_file_path)
 def generate_case():
     try:
         case = generate_patient_case(diagnoses)
+        print(f"AI response: {case}")
+
         session['patient_case'] = case
         sbar = generate_sbar_report(case)
-        return jsonify(case), 201
+
+        print("SBAR:", sbar)  # Check raw response
+        return jsonify(sbar), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -40,8 +44,7 @@ def chat_message():
     chat_history = session.get('chat_history', [])
     
     # Call the chat function with the user input, patient case, and current chat history
-    response = chat_with_patient(user_input, patient_case, chat_history)
-
+    response = chat_with_patient(user_input, patient_case, chat_history).get('message')
     print(f"AI response: {response}")
     
     # Update chat history with user input and AI response
