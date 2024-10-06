@@ -84,16 +84,6 @@ const handleResponse = (data, chatBox, chatHistory) => {
 
     appendMessage(chatBox, 'bot', data.response, chatHistory); // Display bot response
     console.log("[handleResponse] Bot response appended to chatBox:", data.response); // Debugging
-
-    // Display chat history if needed
-    if (data.history) {
-        console.log("[handleResponse] Updating chatBox with history:", data.history); // Debugging
-        chatBox.innerHTML = ''; // Clear chatBox
-        data.history.forEach(line => {
-            const sender = line.startsWith('User:') ? 'user' : 'bot';
-            appendMessage(chatBox, sender, line, chatHistory);
-        });
-    }
     
     /* When we implement how to end chat and what to do after*/
     if (data.chat_ended) {
