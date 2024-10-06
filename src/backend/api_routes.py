@@ -59,3 +59,8 @@ def chat_message():
         }), 200
     
     return jsonify({"response": response, "history": chat_history})
+
+@api_routes.route('/clear-chat-history', methods=['POST'])
+def clear_chat_history():
+    session.pop('chat_history', None)  # Remove chat_history from session
+    return jsonify({"message": "Chat history cleared."}), 200
