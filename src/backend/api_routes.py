@@ -53,13 +53,12 @@ def chat_message():
     if diagnosis_command(first_element):
         evaluation = evaluate_diagnosis(client, patient_case, chat_history)
         return jsonify({
-            "response": response,
             "history": chat_history,
             "chat_ended": True,  # Indicate that the chat has ended
             "evaluation": evaluation
         }), 200
     elif test_command(first_element):
-        return 
+        return
     
     return jsonify({"response": response, "history": chat_history})
 
