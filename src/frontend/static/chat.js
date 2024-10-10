@@ -80,16 +80,17 @@ const handleResponse = (data, chatBox, chatHistory) => {
         return;
     }
 
+    if (data.chat_ended) {
+        const evaluationMessage = data.evaluation.message;
+        appendMessage(chatBox, 'bot', `Evaluation: ${evaluationMessage}`, chatHistory);
+        stopChat(); // Function to disable further input
+        return;
+    }
+
     console.log("[handleResponse] Handling response data:", data); // Debugging
 
     appendMessage(chatBox, 'bot', data.response, chatHistory); // Display bot response
     console.log("[handleResponse] Bot response appended to chatBox:", data.response); // Debugging
-    
-    /* When we implement how to end chat and what to do after*/
-    if (data.chat_ended) {
-        appendMessage(chatBox, 'bot', `Evaluation: ${data.evaluation}`, chatHistory);
-        stopChat(); // Function to disable further input
-    }
 
     chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom after updating chat history
     console.log("[handleResponse] ChatBox scrolled to bottom."); // Debugging
@@ -103,7 +104,6 @@ const stopChat = () => {
     // Create a message to inform the user that the chat has ended
     const endMessage = document.createElement('div');
     endMessage.classList.add('message', 'bot-message'); // Style the message as from the bot
-    endMessage.innerHTML = "<span class='message-text'>Chat has ended. Thank you for your input!</span>";
 
     // Append the ending message to the chat box
     const chatBox = document.getElementById('chatBox');
