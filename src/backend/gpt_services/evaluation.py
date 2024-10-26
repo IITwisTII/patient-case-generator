@@ -10,11 +10,14 @@ def evaluate_diagnosis(client, patient_case, chat_history):
     )
     
     feedback_prompt = (
-        f"Patient Case: {json.dumps(patient_case)}\n"
+        f"Patient Case: {patient_case}\n"
         f"Doctor's Diagnosis: {chat_history}\n"
         "Evaluate the doctor's reasoning and provide feedback. Score them from 0 to 10 based on accuracy "
         "of diagnosis and quality of decision-making."
+        "The 'Patient Case' is not something that the doctor has said. Nothing in it has the doctor said. It is only after the patient diagnosis that the doctor has said anything. The Patient Case is simply an SBAR report for the doctor to use as a start of the process of diagnosis."
     )
-    feedback_prompt = json.dumps(feedback_prompt)
     
-    return generate_openai_response(client, system_prompt, [feedback_prompt], max_tokens=150)
+    response = generate_openai_response(client, system_prompt, [feedback_prompt], max_tokens=150)
+    
+    print("API Response:", response)
+    return response
