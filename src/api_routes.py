@@ -17,7 +17,7 @@ def chat_init():
     return render_template('chat.html')
 
 # Load diagnoses once to avoid repeated file access
-json_file_path = '../../media/icd10_diagnoses.json'
+json_file_path = '../media/icd10_diagnoses.json'
 diagnoses = load_diagnoses(json_file_path)
 
 # Generate Case
