@@ -3,11 +3,11 @@ from gpt_services.openai_client import client
 from gpt_services.case_generator import generate_patient_case, load_diagnoses, generate_sbar_report
 from gpt_services.chat_manager import chat_with_patient
 from gpt_services.evaluation import evaluate_diagnosis
-from gpt_services.commands import diagnosis_command, test_command
+from util.commands import final_diagnosis_command, medical_test_command
 
 api_routes = Blueprint('api', __name__)
 
-# Route to landing page
+
 @api_routes.route('/')
 def index_init():
     return render_template('index.html')
@@ -16,11 +16,11 @@ def index_init():
 def chat_init():
     return render_template('chat.html')
 
-# Load diagnoses once to avoid repeated file access
+
 json_file_path = '../media/icd10_diagnoses.json'
 diagnoses = load_diagnoses(json_file_path)
 
-# Generate Case
+
 @api_routes.route('/generate-case', methods=['GET'])
 def generate_case():
     try:
@@ -50,14 +50,14 @@ def chat_message():
     session['chat_history'] = chat_history
     
     first_element = user_input[0][0]
-    if diagnosis_command(first_element):
+    if final_diagnosis_command(first_element):
         evaluation = evaluate_diagnosis(client, patient_case, chat_history)
         return jsonify({
             "history": chat_history,
-            "chat_ended": True,  # Indicate that the chat has ended
+            "chat_ended": True,
             "evaluation": evaluation
         }), 200
-    elif test_command(first_element):
+    elif medical_test_command(first_element):
         return
     
     return jsonify({"response": response, "history": chat_history})
@@ -65,5 +65,5 @@ def chat_message():
 
 @api_routes.route('/clear-chat-history', methods=['POST'])
 def clear_chat_history():
-    session.pop('chat_history', None)  # Remove chat_history from session
+    session.pop('chat_history', None)
     return jsonify({"message": "Chat history cleared."}), 200
