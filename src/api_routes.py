@@ -3,6 +3,7 @@ from gpt_services.openai_client import client
 from gpt_services.case_generator import generate_patient_case, load_diagnoses, generate_sbar_report
 from gpt_services.chat_manager import chat_with_patient
 from gpt_services.evaluation import evaluate_diagnosis
+from gpt_services.medical_test_results import perform_medical_test
 from util.commands import final_diagnosis_command, medical_test_command
 
 api_routes = Blueprint('api', __name__)
@@ -58,6 +59,7 @@ def chat_message():
             "evaluation": evaluation
         }), 200
     elif medical_test_command(first_element):
+        perform_medical_test(client, user_input, patient_case, chat_history)
         return
     
     return jsonify({"response": response, "history": chat_history})
