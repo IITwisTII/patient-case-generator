@@ -21,10 +21,23 @@ def load_diagnoses(json_file):
     return diagnoses
 
 def generate_patient_case(client, diagnoses):
+    # Choose a random diagnosis from the list
     diagnosis = random.choice(diagnoses)
+
+    # Extract category, code, and description (will return None if any key is missing)
+    category = diagnosis.get("category")
+    code = diagnosis.get("code")
+    description = diagnosis.get("description")
+
+    # Handle None values if necessary
+    if not category or not code or not description:
+        raise ValueError("Missing data in diagnosis. Category, code, or description is None.")
+
+    # Construct the system and user prompts
     system_prompt = "You are a medical expert generating detailed medical cases."
     user_prompt = (
-        f"Generate a detailed medical case for a patient diagnosed with '{diagnosis}'. "
+        f"Generate a detailed medical case for a patient diagnosed with '{description}' (ICD-10 code: {code}, "
+        f"category: {category}). "
         "Return the case in the following JSON format:\n"
         "{\n"
         "\"Patient History\": \"\",\n"
@@ -36,6 +49,7 @@ def generate_patient_case(client, diagnoses):
         "\"Treatment Plan\": \"\"\n"
         "}"
     )
+    
     return generate_openai_response(client, system_prompt, [user_prompt])
 
 def generate_sbar_report(patient_case):
