@@ -18,8 +18,12 @@ def chat_init():
     return render_template('chat.html')
 
 
-json_file_path = '../media/icd10_diagnoses.json'
+json_file_path = '../media/final_icd_data.json'
 diagnoses = load_diagnoses(json_file_path)
+
+@api_routes.route('/test-connection', methods=['GET'])
+def testing_connection():
+    return jsonify({"response": "Connection established."}), 200
 
 
 @api_routes.route('/generate-case', methods=['GET'])

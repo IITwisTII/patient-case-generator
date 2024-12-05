@@ -1,6 +1,2 @@
-/src/backend/__pycache__
 src/backend/config.py
-/__pycache__
-src/backend/gpt_services/__pycache__
-/src/backend/gpt_services/__pycache__
-/src/backend/gpt_services/__pycache__
+__pycache__/
