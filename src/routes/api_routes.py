@@ -14,6 +14,10 @@ diagnoses = load_diagnoses(json_file_path)
 @api_routes.route('/generate-case', methods=['GET'])
 def generate_case():
     try:
+        # Clear previous session data
+        session.pop('chat_history', None)
+        session.pop('patient_case', None)
+
         case = generate_patient_case(client, diagnoses)
         session['patient_case'] = case
         sbar = generate_sbar_report(case)
@@ -34,7 +38,6 @@ def chat_message():
     
     chat_history.append(f"User: {user_input}")
     chat_history.append(f"Patient: {response}")
-    
     session['chat_history'] = chat_history
     
     first_element = user_input[0][0]
