@@ -1,35 +1,18 @@
 import json
 import random
 from .response_generator import generate_openai_response
-
-def load_diagnoses(json_file):
-    with open(json_file, 'r', encoding='utf-8') as file:
-        categorized_data = json.load(file)
-    
-    # Flatten the data into a list of dictionaries with 'category', 'code', and 'description'
-    diagnoses = []
-    for category, codes in categorized_data.items():
-        for entry in codes:
-            # Assuming each entry is a dictionary like {"code": "description"}
-            for code, description in entry.items():
-                diagnoses.append({
-                    "category": category,
-                    "code": code,
-                    "description": description
-                })
-    
-    return diagnoses
+from utils.data_utils import load_diagnoses
 
 def generate_patient_case(client, diagnoses):
-    # Choose a random diagnosis from the list
+    # Choose a random diagnosis from the loaded list
+    json_file_path = '../media/final_icd_data.json'
+    diagnoses = load_diagnoses(json_file_path)
     diagnosis = random.choice(diagnoses)
 
-    # Extract category, code, and description (will return None if any key is missing)
     category = diagnosis.get("category")
     code = diagnosis.get("code")
     description = diagnosis.get("description")
 
-    # Handle None values if necessary
     if not category or not code or not description:
         raise ValueError("Missing data in diagnosis. Category, code, or description is None.")
 
@@ -53,7 +36,7 @@ def generate_patient_case(client, diagnoses):
     return generate_openai_response(client, system_prompt, [user_prompt])
 
 def generate_sbar_report(patient_case):
-    if isinstance(patient_case, dict):  # Ensure patient_case is a dictionary
+    if isinstance(patient_case, dict): 
         sbar = {
             "Situation": f"{patient_case['Symptoms']}.",
             "Background": f"{patient_case['Patient History']}.",
