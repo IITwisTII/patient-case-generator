@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from api_routes import api_routes
+from routes.api_routes import api_routes
 
 app = Flask(__name__, static_folder='../frontend/static', template_folder='../frontend/templates')
 app.secret_key = 'BAD_SECRET_KEY'

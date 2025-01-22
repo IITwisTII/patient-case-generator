@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 from flask import Flask
-from api_routes import api_routes
+from routes.api_routes import api_routes
 
 class ApiRoutesTestCase(unittest.TestCase):
     def setUp(self):

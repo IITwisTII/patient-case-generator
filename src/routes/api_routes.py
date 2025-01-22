@@ -1,30 +1,15 @@
 from flask import Blueprint, jsonify, render_template, request, session
-from gpt_services.openai_client import client
-from gpt_services.case_generator import generate_patient_case, load_diagnoses, generate_sbar_report
-from gpt_services.chat_manager import chat_with_patient
-from gpt_services.evaluation import evaluate_diagnosis
-from gpt_services.medical_test_results import perform_medical_test
-from util.commands import final_diagnosis_command, medical_test_command
+from services.openai_client import client
+from services.case_generator import generate_patient_case, load_diagnoses, generate_sbar_report
+from services.chat_manager import chat_with_patient
+from services.evaluation import evaluate_diagnosis
+from services.medical_test_results import perform_medical_test
+from utils.commands import final_diagnosis_command, medical_test_command
 
 api_routes = Blueprint('api', __name__)
 
-
-@api_routes.route('/')
-def index_init():
-    return jsonify({"message": "Backend is working!"})
-
-@api_routes.route('/chat')
-def chat_init():
-    return render_template('chat.html')
-
-
 json_file_path = '../media/final_icd_data.json'
 diagnoses = load_diagnoses(json_file_path)
-
-@api_routes.route('/test-connection', methods=['GET'])
-def testing_connection():
-    return jsonify({"response": "Connection established."}), 200
-
 
 @api_routes.route('/generate-case', methods=['GET'])
 def generate_case():
@@ -36,7 +21,6 @@ def generate_case():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Chat
 @api_routes.route('/chat/messages', methods=['POST'])
 def chat_message():
     user_input = request.json.get('user_input')
@@ -46,7 +30,6 @@ def chat_message():
         return jsonify({"error": "No patient case found."}), 404
 
     chat_history = session.get('chat_history', [])
-    
     response = chat_with_patient(client, user_input, patient_case, chat_history).get('message')
     
     chat_history.append(f"User: {user_input}")
