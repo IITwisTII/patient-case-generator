@@ -11,7 +11,7 @@ api_routes = Blueprint('api', __name__)
 
 @api_routes.route('/')
 def index_init():
-    return render_template('index.html')
+    return jsonify({"message": "Backend is working!"})
 
 @api_routes.route('/chat')
 def chat_init():
@@ -40,9 +40,9 @@ def generate_case():
 @api_routes.route('/chat/messages', methods=['POST'])
 def chat_message():
     user_input = request.json.get('user_input')
-    patient_case = session.get('patient_case')
-
-    if not patient_case:
+    if "patient_case" in session:
+        patient_case = session.get('patient_case')
+    else: 
         return jsonify({"error": "No patient case found."}), 404
 
     chat_history = session.get('chat_history', [])
@@ -73,3 +73,7 @@ def chat_message():
 def clear_chat_history():
     session.pop('chat_history', None)
     return jsonify({"message": "Chat history cleared."}), 200
+
+
+
+
