@@ -38,10 +38,10 @@ def generate_patient_case(client, diagnoses):
 def generate_sbar_report(patient_case):
     if isinstance(patient_case, dict): 
         sbar = {
-            "Situation": f"{patient_case['Symptoms']}.",
-            "Background": f"{patient_case['Patient History']}.",
-            "Assessment": f"{patient_case['Physical Examination Findings']}.",
-            "Recommendation": f"{patient_case['Treatment Plan']}."
+            "situation": f"{patient_case['Symptoms']}",
+            "background": f"{patient_case['Patient History']}",
+            "assessment": f"{patient_case['Physical Examination Findings']}",
+            "recommendation": f"{patient_case['Treatment Plan']}"
         }
         return sbar
     else:
