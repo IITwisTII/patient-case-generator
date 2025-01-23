@@ -4,7 +4,7 @@ Alis Comments on the current state:
 - routes: 
     - api_routes.py: 
         - chat_message route should map calls to a seperate controller function since the function is starting to get complicated and will, no doubt, get more complicated.
-            - Final_diagnosis and medical_test_command not working right now
+            - chat_messages needs inprovement. When asked for medical tests or when stating the final diagnoses, it seems to be generating patient reponse anyways. 
         - clear-chat-history isn't being used right now.
 - services: 
     - case_generator: 
@@ -22,12 +22,12 @@ Alis Comments on the current state:
         - Needs improvement via prompt engineering to evaluate properly. Seems to be hallucinating the users actions and unable to distinguish information provided by the AI model (patient_case) and information gathered by the user. 
         - Inconsistent naming. 
     - medical_test_results: 
-        - Not currently working. Inconsistent naming. 
+        - Needs improvement via prompt engineering to return only relevant medical tests that the user asked for instead of recommending what kind of tests they should take. Inconsistent naming. 
 - tests: 
     - Create a lot of tests for easier developement, testing of new features and better security
 - models: 
     - Database ORM
-        - User details and information
-        - Past case details, scores and evaluation
+        - User details, role and contactinformation
+        - Past case details (?), scores and evaluation 
         - Validation metrics
 

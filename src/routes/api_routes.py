@@ -49,8 +49,11 @@ def chat_message():
             "evaluation": evaluation
         }), 200
     elif medical_test_command(first_element):
-        perform_medical_test(client, user_input, patient_case, chat_history)
-        return
+        test_results = perform_medical_test(client, user_input, patient_case, chat_history)
+        return jsonify({
+            "test_results": test_results, 
+            "history": chat_history
+        }), 200
     
     return jsonify({"response": response, "history": chat_history})
 
