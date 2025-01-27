@@ -9,6 +9,7 @@ from api.services.evaluation import evaluate_diagnosis
 from api.services.medical_test_results import perform_medical_test
 from api.utils.data_utils import load_diagnoses
 from api.utils.commands import final_diagnosis_command, medical_test_command
+import json
 
 json_file_path = 'media/final_icd_data.json'
 diagnoses = load_diagnoses(json_file_path)
@@ -30,7 +31,8 @@ class ChatMessageView(APIView):
     parser_classes = [JSONParser]
     
     def post(self, request):
-        user_input = request.data.get('user_input')
+        data = json.loads(request.body)
+        user_input = data.get('user_input')
         if "patient_case" in request.session:
             patient_case = request.session.get('patient_case')
         else:
