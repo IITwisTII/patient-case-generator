@@ -1,4 +1,3 @@
-import json
 from .response_generator import generate_openai_response
 
 def evaluate_diagnosis(client, patient_case, chat_history):

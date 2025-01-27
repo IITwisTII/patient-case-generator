@@ -1,12 +1,8 @@
-import json
 import random
 from .response_generator import generate_openai_response
-from utils.data_utils import load_diagnoses
 
 def generate_patient_case(client, diagnoses):
-    # Choose a random diagnosis from the loaded list
-    json_file_path = '../media/final_icd_data.json'
-    diagnoses = load_diagnoses(json_file_path)
+    
     diagnosis = random.choice(diagnoses)
 
     category = diagnosis.get("category")
